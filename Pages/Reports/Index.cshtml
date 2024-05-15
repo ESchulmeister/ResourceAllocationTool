@@ -1,0 +1,30 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "_Layout";
+}
+
+
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkReports').css({ 'background-color': HighlightColor });
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+    <div style="align-content:center;">
+
+    </div>
+}

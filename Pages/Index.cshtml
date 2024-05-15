@@ -1,0 +1,28 @@
+@page
+@model IndexModel
+@using DevExtreme.AspNet.Data;
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkHome').css({ 'background-color': HighlightColor });
+    });
+</script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h2 class="title action-link" >@ViewData["Title"]</h2>
+
+    <div>
+        <input type="image" src="~/Images/index.png" style="position:static;width:250px;height:250px" />
+
+    </div>
+}

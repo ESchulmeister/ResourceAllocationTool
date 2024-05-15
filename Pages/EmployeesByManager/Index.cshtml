@@ -1,0 +1,125 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Employees By Manager";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkEmpByManager').css({ 'background-color': HighlightColor });
+    });
+
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="container">
+    <h2 class="title">@ViewData["Title"]</h2>
+
+
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="dx-field-label custLabel" style="width:25%">Manager:</div>
+            <div class="dx-field-value" style="width:75%">
+           @*      @(Html.DevExtreme().SelectBox()
+                    .DeferRendering(false)
+                    .ID("selManagers")
+                    .OnValueChanged("refreshEmpByManagerGrid")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiManagers")
+                        .LoadAction("List")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("ID")
+                        .OnLoaded("setSelectedMgrValue")
+                    )
+                    .ShowClearButton(true)
+                    .AcceptCustomValue(true)
+                    .DisplayExpr("FullNameReversed")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true)
+                ) *@
+            </div>
+        </div>
+    </div>
+
+    <div class="dx-fieldset">
+
+    <div class="dx-field custGrid" id="divGrid">
+    
+        
+     @*    @(Html.DevExtreme().DataGrid<UserModel>()
+            .ID("grdUsersByManager")
+            .DataSource(d => d.Mvc()
+                .Controller("ApiUsers")
+                .LoadAction("ListAll")
+                .LoadParams(new { mgrID = new JS("getManagerID") })
+                .Key("ID")
+            )
+            .OnEditorPreparing("grdUsersByManager_OnEditorPreparing")
+            .RemoteOperations(true)
+            .Columns(col =>
+            {
+
+                col.AddFor(m => m.FullNameReversed)
+                .Width(450)
+                .Caption("Employee");
+
+                col.AddFor(m => m.FTE)
+                .Width(100)
+                .CssClass("colRight")
+                .DataType(GridColumnDataType.Number)
+                .Format(f => f.Type(Format.FixedPoint).Precision(2));
+
+
+            })
+
+            .AllowColumnReordering(false)
+            .AllowColumnResizing(true)
+            .ShowBorders(true)
+            .NoDataText("No Employees Detected")
+            .ColumnAutoWidth(false)
+            .HeaderFilter(f => f.Visible(true))
+            .FilterRow(f => f.Visible(true))
+            // .Editing(edt =>edt.Mode(GridEditMode.Row)
+            //     .UseIcons(true)
+            //     .Form(f => f.ColCount(1))
+            //     .AllowAdding(false)
+            //     .AllowUpdating(bCanEdit)
+            //)
+            .Paging(paging => paging.PageSize(10))
+
+            .Pager(pager =>
+            {
+                pager.Visible(true);
+                pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                pager.ShowInfo(true);
+            })
+            
+             *@
+           )
+
+
+    </div>
+
+</div>
+
+</div>
+}

@@ -1,0 +1,266 @@
+﻿.title {
+    color: #8108e0;
+    font-size: 23px;
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant: small-caps;
+    cursor: none;
+    text-align: left;
+}
+
+
+.menuImg {
+    cursor: pointer;
+    width: 55px;
+    height: 55px;
+    border-radius: 45%;
+}
+
+.dx-toolbar .dx-toolbar-items-container {
+     height: 40px;
+}
+
+.dx-field{
+    min-height:10px;
+}
+
+.required {
+    color: red;
+    font-weight: 700;
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+.cFooter {
+    margin: 0;
+    padding: 0;
+    font-size:10px;
+    font-weight:600; 
+    text-align:justify;
+    width:100%;
+}
+
+
+.error {
+    color: red;
+    font-weight: 500;
+    text-align: left;
+    font-size: 13px;
+   margin-bottom: 5px;
+}
+
+.dx-textbox{
+    width: 275px;
+}
+
+.dx-selectbox{
+    width:325px;
+}
+
+.dx-field-item-label-text {
+    padding-right: 40px;
+} 
+ .dx-overlay-content.dx-resizable {
+    display: block;
+}
+
+
+#loadImg .wrap {
+    width: 300px;
+    margin:auto;
+}
+
+
+#loadImg img {
+    display: inline;
+    float: none;
+}
+
+#header {
+    display: flex;
+    justify-content: center;
+}
+
+.img {
+    position: absolute;
+    left: 0;
+}
+
+.cUser {
+    font-size: 13px;
+    font-style: italic;
+    color: #100a0a;
+}
+
+.divMenu {
+    float: right;
+    width: 80%;
+    text-align: right;
+}
+.ulMenu {
+    list-style: none;
+    font-size: 9px;
+}
+
+.divImg {
+    width:15%;
+    float: left;
+    display:inline-block;
+}
+
+.cFooter {
+    position: sticky;
+    bottom: 0;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    font-size: 10px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    width:100%;
+}
+
+#modTitle {
+    color: #8108e0;
+    font-size: 16px;
+    font-variant: small-caps;
+}
+
+
+.modLabel {
+    color: #f05b41;
+    font-weight: 500;
+}
+
+
+#userDetail {
+    position: relative;
+
+}
+
+/*Initially center modal-profile*/
+.modal-dialog {
+    position: fixed;
+    margin: auto;
+    left: 50%;
+    border: 1px solid #ff7200;
+}
+
+.form-control {
+    font-size: 13px;
+}
+
+.form-inline {
+    text-align: left;
+}
+
+.col-sm-4{
+    font-size:14px;
+    font-weight:500;
+}
+
+.modal-dialog {
+    width: 325px;
+    height:contain;
+}
+
+#btnLogout {
+    padding: 0;
+    border: none;
+    font-style:italic;
+    background: none !important;
+    border: none;
+    cursor: pointer;
+}
+
+.aCurrUser {
+    color: #8108e0;
+    cursor: pointer;
+}
+
+.form-control {
+    font-size: 13px;
+}
+
+td[role=columnheader] {
+    text-align: center !important
+}
+
+
+.logo-image {
+    width: inherit;
+    height: inherit;
+    overflow: hidden;
+}
+
+.body-content {
+    position:sticky;
+    padding-left: 5px;
+    padding-right: 5px;
+    text-align:center;
+    align-content:center;
+}
+
+
+.dx-data-row td {
+    text-align: left !important;
+}  
+
+a {
+
+    font-size: 13px;
+    font-weight:600;
+}
+
+
+.dx-data-row td.colCenter {
+    text-align: center !important;
+}
+
+.cLabel {
+    float: left;
+    width: 25%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.custLabel {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #f05b41;
+    font-weight: 600;
+}
+
+
+.dx-datagrid .dx-link {
+    text-decoration: none;
+    cursor: pointer;
+    color: #337ab7;
+}
+
+.dx-data-row td.colRight {
+    text-align: right !important;
+}
+
+.dxLabel {
+    float: left;
+    overflow: hidden;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    color: #8108e0;
+}
+
+.custGrid
+{
+    min-height:600px;
+    min-width:600px;
+}
+
+.descWrap {
+    white-space: normal;
+    word-wrap: break-word;
+}  

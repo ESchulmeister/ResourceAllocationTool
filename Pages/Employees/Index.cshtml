@@ -1,0 +1,142 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Employees";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkEmployees').css({ 'background-color': HighlightColor });
+        $('#divGrid').show();
+    });
+</script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+
+    <div class="form container">
+
+        <div class="dx-filedset">
+            <div class="dx-field custGrid" id="divGrid">
+        @*         @(Html.DevExtreme().DataGrid<UserModel>()
+                    .ID("gridEmployees")
+                    .AllowColumnReordering(false)
+                    .AllowColumnResizing(true)
+                    .ShowBorders(true)
+                    .NoDataText("No Employees Detected")
+                    .ColumnAutoWidth(false)
+
+                     .SearchPanel(searchPanel => searchPanel
+                        .Visible(true)
+                        .Width(280)
+                        .Placeholder("Search for name/role,min 3 chars..")
+                    )
+
+                    .DataSource(d => d.Mvc()
+                        .Controller("ApiUsers")
+                        .LoadAction("ListAll")
+                        .LoadParams(new { all = true })
+                        .UpdateAction("UpdateUser")
+                        .Key("ID")
+                        )
+
+                    .OnEditorPreparing("grdEmployees_OnEditorPreparing")
+
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+
+                        col.AddFor(m => m.FullNameReversed)
+                        .Caption("Employee");
+
+                        col.AddFor(m => m.RoleID)
+                        .Caption("Default Role")
+                        .ValidationRules(f => f.AddRequired())
+                        .Lookup(lookup => lookup
+                        .DataSource
+                        (
+                            d => d.Mvc()
+                            .Controller("ApiRoles")
+                            .LoadAction("List")
+                            .LoadParams(new { all = true })
+
+                            .Key("ID")
+                        )
+                        .ValueExpr("ID")
+                        .DisplayExpr("Name")
+                        );
+
+                        col.AddFor(m=>m.FTE)
+                            .CssClass("colRight")
+                            .DataType(GridColumnDataType.Number)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(2))
+                            .ValidationRules(r =>
+                            {
+                                r.AddRequired();
+                                r.AddCustom().ValidationCallback("validate_fte").Message("<=1");
+                            });
+
+                        col.AddFor(m => m.WillTrackHours)
+                           .Width(90)
+                           .Caption("Track Hours?")
+                           .DataType(GridColumnDataType.Boolean)
+                           .TrueText("Yes").FalseText("No")
+                           .CssClass("colCenter");
+
+                        col.Add()
+                            .Type(GridCommandColumnType.Buttons)
+                            .CssClass("cmd colCenter")
+                            .Buttons(b =>
+                            {
+                                b.Add()
+                                    .Name(GridColumnButtonName.Edit)
+                                    .Hint("Set the employee role, FTE & track hours");
+                            });
+
+                    })
+
+                    .FilterRow(f => f.Visible(true))
+
+                    .HeaderFilter(f => f.Visible(true))
+                    .Scrolling(s => s.RowRenderingMode(GridRowRenderingMode.Virtual))
+                        .Editing(f => f.Mode(GridEditMode.Form)
+                        .Form(f => f.ColCount(1))
+                        .UseIcons(true)
+                        .AllowUpdating(bCanEdit)
+                    )
+
+                     .Paging(paging => paging.PageSize(10))
+                     .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                        pager.ShowInfo(true);
+                    }))
+ *@
+            </div>
+
+        </div>
+
+    </div>
+
+}

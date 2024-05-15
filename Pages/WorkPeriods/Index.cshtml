@@ -1,0 +1,125 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Work Periods";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkWorkPeriods').css({ 'background-color': HighlightColor });
+        $('#divGrid').show();
+   });
+</script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form container-sm" id="container">
+
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+
+    <div class="dx-field" id="divGrid">
+     @*     @(Html.DevExtreme().DataGrid<PeriodModel>()
+                .ID("gridPeriods")
+                .ShowBorders(true)
+                .NoDataText("No Periods Detected")
+                .ColumnAutoWidth(false)
+                .DataSource(d => d.Mvc()
+                    .Controller("ApiPeriods")
+                    .LoadAction("List")
+                    .InsertAction("AddPeriod")
+                    .UpdateAction("EditPeriod")
+                    .DeleteAction("DeletePeriod")
+                    .Key("ID")
+                    ) 
+
+                .OnInitNewRow("grdPeriods_OnInitNewRow")
+
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+                        col.AddFor(m => m.Name)
+                         .Width(170)
+                        .ValidationRules(f => f.AddRequired())
+                        .Caption("Work Period");
+
+                        col.AddFor(m => m.WorkDays)
+                         .Width(120)
+                        .DataType(GridColumnDataType.Number)
+                        .CssClass("colCenter")
+                         .ValidationRules(r =>
+                         {
+                             r.AddRequired();
+                             r.AddCustom().ValidationCallback("validate_days").Message("<=20");
+                         });
+
+                        col.AddFor(m => m.WorkHours)
+                        .Width(120)
+                        .DataType(GridColumnDataType.Number)
+                        .CssClass("colCenter")
+                          .ValidationRules(r =>
+                          {
+                              r.AddRequired();
+                              r.AddCustom().ValidationCallback("validate_hours").Message("<=200");
+                          });
+
+                        col.Add()
+                           .Width(100)
+                          .Type(GridCommandColumnType.Buttons)
+                          .CssClass("cmd colCenter")
+                          .Buttons(b =>
+                          {
+                              b.Add()
+                                  .Name(GridColumnButtonName.Edit)
+                                  .Hint("Edit the name, days & hours");
+
+                              b.Add()
+                                 .Name(GridColumnButtonName.Delete)
+                                 .Hint("Deactivate the period");
+                          });
+
+                    })
+
+                    .FilterRow(f => f.Visible(true))
+                    .HeaderFilter(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+
+                    .Editing(edt => edt.Mode(GridEditMode.Form)
+                        .UseIcons(true)
+                        .Form(f => f.ShowColonAfterLabel(false))
+                        .Form(f => f.ColCount(1))
+                        .AllowDeleting(bCanEdit)
+                        .AllowAdding(bCanEdit)
+                        .AllowUpdating(bCanEdit)
+                        .Texts(txt => txt.AddRow("Add New Period"))
+                    )
+
+                    .Paging(paging => paging.PageSize(10))
+                    .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                        pager.ShowInfo(true);
+                    })) *@
+
+    </div>
+
+
+</div>
+}

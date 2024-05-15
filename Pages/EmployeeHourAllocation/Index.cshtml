@@ -1,0 +1,208 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Employee Hour Allocation";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkEmployeeHourAllocation').css({ 'background-color': HighlightColor });
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+    <div class="form container">
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="custLabel">Work Period:</div>
+                <div class="dx-field-value" style="width:75%">
+                 @*    @(Html.DevExtreme().SelectBox()
+                    .DeferRendering(false)
+                    .ID("selPeriods")
+                    .OnValueChanged("refreshEmployeeAllocations")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiPeriods")
+                        .LoadAction("List")
+                        .Key("ID")
+                    )
+                    .ShowClearButton(true)
+                    .DisplayExpr("Name")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true)
+                ) *@
+                </div>
+            </div>
+        </div>
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="custLabel">Employee:</div>
+                <div class="dx-field-value" style="width:75%">
+                @*     @(Html.DevExtreme().SelectBox()
+                   .DeferRendering(false)
+                    .ID("selEmployees")
+                    .OnValueChanged("refreshEmployeeAllocations")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiUsers")
+                        .LoadAction("ListAll")
+                        .Key("ID")
+                    )
+                    .ShowClearButton(true)
+                    .DisplayExpr("FullNameReversed")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true) *@
+                )
+
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="dxFieldset" id="divEHA">
+            <div class="dx-field">
+                <table   cellspacing="3" cellpadding="4" style="margin-right:25px;margin-left:20px" class="dxField">
+                    <tr>
+                        <td class="custLabel">FTE:</td>
+                        <td style="width:20%;text-align:left">
+                            <div id="lblFTEHours"></div>
+                        </td>
+                        <td class="custLabel" style="width:auto">Hours Used:</td>
+                        <td class="text-align:left">
+                            <div id="lblHoursUsed"></div>
+                        </td>
+                        <td class="custLabel">Hours Remaining:</td>
+                        <td  style="text-align:right">
+                            <div id="lblHoursRemaining"></div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td class="custLabel">Total Hours:</td>
+                        <td  style="width:20%;text-align:left">
+                            <div id="lblTotalHours"></div>
+                        </td>
+                        <td class="custLabel" style="width:auto">Allocated Hours:</td>
+                        <td style="text-align:left;" colspan="4">
+                            <div id="lblAllocatedHours"></div>
+                        </td>
+                    </tr>
+
+                   
+                </table>
+            </div>
+        </div>
+
+
+        <div class="dx-fieldset" id="divGrid">
+            <div class="dx-field"  >
+                <div class="dx-field"  >
+                    <div class="dx-field custLabel" >Employee Hours</div>
+                </div>
+
+                <div class="dx-field custGrid">
+                 @*    @(Html.DevExtreme().DataGrid<HourAllocationModel>()
+                    .ID("gridEmployeeProjectHourAllocation")
+
+                    .DataSource(d => d.Mvc()
+                        .Controller("ApiEmployeeAllocations")
+                        .LoadAction("ListByPeriodAndEmployee")
+                        .UpdateAction("SaveHourAssociation")
+                        .LoadParams(new { employeeID = new JS("getEmployeeID"), periodID = new JS("getPeriodID") })
+                        .Key("Key")
+                    )
+                    .OnEditorPreparing("grdEmployeeAllocations_OnEditorPreparing")
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+
+                        col.AddFor(m => m.ProjectName);
+
+                        col.AddFor(m => m.ProjectRole);
+
+                        col.AddFor(m => m.EstimatedHours)
+                            .CssClass("colCenter")
+                            .DataType(GridColumnDataType.Number)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(0))
+                            .ValidationRules(r =>
+                            {
+                                //r.AddRequired();
+                                //r.AddCustom().ValidationCallback("validate_fte").Message("<=1");
+                            });
+
+                        //col.AddFor(m => m.ActualHours)
+                        //   .HidingPriority(0)
+                        //   .CssClass("colCenter")
+                        //   .DataType(GridColumnDataType.Number)
+                        //   .Format(f => f.Type(Format.FixedPoint).Precision(0))
+                        //   .ValidationRules(r =>
+                        //   {
+                        //       //r.AddRequired();
+                        //       //r.AddCustom().ValidationCallback("validate_fte").Message("<=1");
+                        //   });
+
+                        col.Add()
+                            .Width(75)
+                            .Type(GridCommandColumnType.Buttons)
+                            .CssClass("colCenter")
+                            .Buttons(b =>
+                            {
+                                b.Add()
+                                    .Hint("Change the Estimated/Actual Houts")
+                                    .Name(GridColumnButtonName.Edit);
+                            });
+                    })
+
+                    .AllowColumnReordering(false)
+                    .AllowColumnResizing(true)
+                    .ShowBorders(true)
+                    .ColumnAutoWidth(false)
+                    .NoDataText("No Project Hours Detected")
+                    .HeaderFilter(f => f.Visible(true))
+                    .OnRowUpdated("refreshEmployeeAllocations")
+                    .FilterRow(f => f.Visible(true))
+
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Editing(edt =>edt.Mode(GridEditMode.Row)
+                        .UseIcons(true)
+                        .AllowUpdating(bCanEdit)
+                    )
+
+                    .Paging(paging => paging.PageSize(10))
+                   .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                        pager.ShowInfo(true);
+                    }))
+
+ *@
+
+                </div>
+
+            </div>
+
+            </div>
+
+        </div>
+
+        }

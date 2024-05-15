@@ -1,0 +1,108 @@
+﻿@page
+@model ResourceAllocationTool.Models.LoginViewModel;
+@using DevExtreme.AspNet.Data;
+
+@{
+    ViewData["Title"] = "Sign In";
+    Layout = "_Layout";
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#divMenu').hide();
+        $('#divLoginPartial').hide();
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+
+    <div class="form container">
+
+        <h2 class="title action-link ">@ViewBag.Title</h2>
+
+        <div id="anchor" style="visibility: hidden; display: none"></div>
+
+        <div id="divSpinner">
+
+   @*          @(Html.DevExtreme().LoadIndicator()
+                              .ID("loadIndicator")
+                              .IndicatorSrc(Url.Content("~/images/spinner.svg"))
+                   .Width(100)
+                   .Height(100)
+                    ) *@
+
+        </div>
+
+
+        <div class="error" id="divError">
+        </div>
+
+        <div id="container">
+
+
+            <div class="dx-field">
+                <div class="dx-field-label" style="width:auto">Please enter DTB® network credentials</div>
+            </div>
+
+            <div class="dx-field" style="text-align:left">
+                <div class="dx-field-label" style="width:25%">@Html.LabelFor(m => m.UserName) <span class="required">*</span></div>
+                <div class="dx-field-value" style="width:75%">
+         @*            @(Html.DevExtreme().TextBoxFor(m => m.UserName)
+                .Placeholder("Enter User Name")
+                .ID("txtUserName")
+                .MaxLength(255)
+                .OnInitialized("userName_focus")
+                .ShowClearButton(true)
+                .ValueChangeEvent("keyup")
+                .OnValueChanged("userName_change")
+                ) *@
+                </div>
+            </div>
+
+
+            <div class="dx-field" style="text-align:left">
+                <div class="dx-field-label" style="width:25%">@Html.LabelFor(m => m.Password) <span class="required">*</span></div>
+                <div class="dx-field-value" style="width:75%">
+
+
+                 @*    @(Html.DevExtreme().TextBoxFor(m => m.Password)
+                    .ID("txtPassword")
+                    .ShowClearButton(true)
+                    .ValueChangeEvent("keyup")
+                    .Placeholder("Enter Password")
+                    .Mode(TextBoxMode.Password)
+                    .OnValueChanged("password_change")
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add()
+                            .Name("btnPassword")
+                            .Location(TextEditorButtonLocation.After)
+                            .Widget(w => w.Button()
+                            .Type(ButtonType.Default)
+                            .Icon(Url.Content("~/images/eye.png"))
+                            .OnClick("changePasswordMode")
+                        );
+
+                        //clear btn
+                        buttons.Add().Name("clear");
+                    })) *@
+                </div>
+            </div>
+        </div>
+
+
+        <div class="dx-field" style="text-align:left">
+     @*        @(Html.DevExtreme().Button()
+                    .Text("Log In")
+                    .UseSubmitBehavior(false)
+                    .Type(ButtonType.Default)
+                    .ID("btnLogin")
+                    .OnClick("btnLogin_Click")
+            ) *@
+        </div>
+
+    </div>
+}

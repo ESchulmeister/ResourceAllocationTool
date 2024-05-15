@@ -1,0 +1,170 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Project Team";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkProjTeams').css({ 'background-color': HighlightColor });
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+<div class="form container">
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="custLabel">Project:</div>
+            <div class="dx-field-value" style="width:75%">
+              @*   @(Html.DevExtreme().SelectBox()
+                    .DeferRendering(false)
+                    .ID("selProjects")
+                    .OnValueChanged("refreshTeamsGrid")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiProjects")
+                        .LoadAction("List")
+                        .LoadParams(new { all = false})
+                        .Key("ID")
+                    )
+                    .ShowClearButton(true)
+                    .DisplayExpr("Name")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true) *@
+                )
+            </div>
+        </div>
+    </div>
+    <div class="dx-fieldset">
+        <div class="dx-field" id="divManager">
+            <div class="custLabel">Manager:</div>
+            <div class="dx-field-value" style="width:75%" >
+                <a id="linkMgr" href="#" title="Click to view subordinates"><label id="lblManager" name="lblManager" class="dxLabel"  style="cursor:pointer!important;"></label></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="dx-fieldset">
+
+        <div class="dx-field custGrid" id="divGrid">
+@*                 @(Html.DevExtreme().DataGrid<ProjectUserModel>()
+                    .ID("gridProjectTeams")
+                    .DataSource(d => d.Mvc()
+                        .Controller("ApiProjectUsers")
+                        .LoadAction("ListByProject")
+                        .InsertAction("AddProjectUser")
+                        .UpdateAction("UpdateProjectUser")
+                        .DeleteAction("DeleteProjectUser")
+                        .LoadParams(new {projectID = new JS("getProjectID") })
+                        .Key("ID")
+                    )
+                    .OnEditorPreparing("grdProjectTeam_OnEditorPreparing")
+                    .OnInitNewRow("grdProjectTeam_OnInitNewRow")
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+
+                        col.AddFor(m => m.UserID)
+                        .Caption("Employee")
+                        .Lookup(lookup => lookup
+                            .DataSource
+                            (
+                                    d => d.Mvc().Controller("ApiUsers")
+                                    .LoadAction("ListAll")
+                                    .LoadParams(new { all = false })
+                                    .Key("ID")
+                            )
+                            .ValueExpr("ID")
+                            .DisplayExpr("FullNameReversed")
+                        );
+
+                        col.AddFor(m => m.RoleID)
+                        .Caption("Project Role")
+                        .Lookup(lookup => lookup
+                            .DataSource
+                            (
+                                d => d.Mvc().
+                                    Controller("ApiRoles")
+                                    .LoadAction("List")
+                                    .LoadParams(new { all = false })
+                                    .Key("ID")
+                            )
+                        .ValueExpr("ID")
+                        .DisplayExpr("Name")
+                        );
+
+                        col.AddFor(m => m.ProjectID)                    //needed for parameters
+                            .Visible(false)
+                            .ShowInColumnChooser(true)
+                            .FormItem(e => e.Visible(false));
+
+                        col.Add()
+                            .Type(GridCommandColumnType.Buttons)
+                            .Width(100)
+                            .CssClass("cmd colCenter")
+                            .Buttons(b =>
+                            {
+                                b.Add()
+                                    .Name(GridColumnButtonName.Edit)
+                                    .Hint("Edit the Project Role");
+
+                                b.Add()
+                                    .Name(GridColumnButtonName.Delete)
+                                    .Hint("Remove the employee from the project");
+
+                            });
+                    })
+
+                    .AllowColumnReordering(false)
+                    .AllowColumnResizing(true)
+                    .ShowBorders(true)
+                    .NoDataText("No Team Detected")
+                    .ColumnAutoWidth(false)
+                    .HeaderFilter(f => f.Visible(true))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Editing(edt =>edt.Mode(GridEditMode.Form)
+                        .UseIcons(true)
+                        .Form(f => f.ColCount(1))
+                        .Texts(txt => txt.AddRow("Add Employee"))
+
+                        .AllowUpdating(bCanEdit)
+                        .AllowAdding(bCanEdit)
+                        .AllowDeleting(bCanEdit)
+                    )
+                    .Paging(paging => paging.PageSize(10))
+
+                  .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                        pager.ShowInfo(true);
+                    }))
+
+         
+ *@    </div>
+
+</div>
+
+</div>
+}

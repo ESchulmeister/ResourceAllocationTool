@@ -1,0 +1,125 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkRoles').css({ 'background-color': HighlightColor });
+        $('#divGrid').show();
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+
+
+    <div class="form container">
+            
+        <h2 class="title action-link">@ViewData["Title"]</h2>
+
+
+        <div class="dx-filedset">
+        <div class="dx-field" id="divGrid">
+       @*      @(Html.DevExtreme().DataGrid<RoleModel>()
+                    .ID("gridRoles")
+                        .DataSource(d => d.Mvc()
+                        .Controller("ApiRoles")
+                        .LoadAction("List")
+                        .LoadParams(new { all = true })
+                        .InsertAction("AddRole")
+                        .UpdateAction("EditRole")
+                        .DeleteAction("DeleteRole")
+                        .Key("ID")
+                    )
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+                        col.AddFor(m => m.Name)
+                            .Width(170)
+                            .ValidationRules(f => f.AddRequired())
+                            .ShowEditorAlways(true)
+                            .Caption("Role Name");
+
+                        col.AddFor(m => m.IsSupervisor)
+                            .Width(90)
+                             .Caption("Supervisor?")
+                             .ShowEditorAlways(true)
+                             .DataType(GridColumnDataType.Boolean)
+                             .TrueText("Yes").FalseText("No")
+                             .CssClass("colCenter");
+
+                        col.AddFor(m => m.IsAdministrator)
+                             .Caption("Administrator?")
+                             .Width(90)
+                             .ShowEditorAlways(true)
+                             .DataType(GridColumnDataType.Boolean)
+                             .TrueText("Yes").FalseText("No")
+                             .CssClass("colCenter");
+
+                        col.Add()
+                           .Type(GridCommandColumnType.Buttons)
+                           .CssClass("cmd colCenter")
+                           .Width(110)
+                           .Buttons(b =>
+                           {
+                               b.Add()
+                                .Hint ("Edit Role/Rights")
+                                .Name(GridColumnButtonName.Edit);
+
+                               b.Add()
+                                .Hint("Deactivate Role")
+                                .Name(GridColumnButtonName.Delete);
+
+                           });
+
+                    })
+
+                .AllowColumnReordering(false)
+                .AllowColumnResizing(true)
+                .ShowBorders(true)
+                .NoDataText("No Roles Detected")
+                .ColumnAutoWidth(false)
+                .FilterRow(f => f.Visible(true))
+                .HeaderFilter(f => f.Visible(true))
+                .Editing(edt =>edt.Mode(GridEditMode.Form)
+                    .UseIcons(true)
+                    .Form(f => f.ShowColonAfterLabel(false))
+                    .Form(f => f.ColCount(1))
+                    .AllowDeleting(bCanEdit)
+                    .AllowAdding(bCanEdit)
+                    .AllowUpdating(bCanEdit)
+                    .Texts(txt => txt.ConfirmDeleteTitle("Delete Role"))
+                   // .Texts(txt => txt.ConfirmDeleteMessage("Are you sure you want to delete this role?"))
+                    .Texts(txt => txt.AddRow("Add New Role"))
+                )
+
+                .Paging(paging => paging.PageSize(10))
+
+                .Pager(pager =>
+                {
+                    pager.Visible(true);
+                    pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                    pager.ShowInfo(true);
+                })) *@
+
+        </div>
+
+    </div>
+
+</div>
+}

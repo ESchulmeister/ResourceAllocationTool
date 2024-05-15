@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>DTB® Resource Allocation Tool - @ViewData["Title"]</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <link rel="stylesheet" href="~/css/vendor.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Custom.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <script src="~/js/vendor.js" asp-append-version="true"></script>
+    <script src="~/js/index.js" asp-append-version="true"></script>
+
+</head>
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@{
+    var currUser = HttpContextAccessor.HttpContext.User;
+    var _authenticated = currUser.Identity.IsAuthenticated;
+}
+
+<body>
+
+    <div class="container" style="text-align: left">
+        <nav class="navbar navbar-expand-xl  nav-fill" style="width: 100%; height:auto;">
+            <div style="width:100%">
+                <a class="navbar-brand" href="/">
+                    <div class="logo-image">
+                        <img src="~/images/Logo.png" href="/" title="Dayton T. Brown" alt="Dayton T. Brown" style="height: 75%; width: 75%" />
+                    </div>
+                </a>
+            </div>
+            <div id="divLoginPartial">
+                @if (_authenticated)
+                {
+                    @await Html.PartialAsync("_LoginPartial")
+
+                }
+            </div>
+        </nav>
+        <hr />
+    </div>
+
+
+    @if (_authenticated)
+    {
+
+        <div style="float: left;text-align:center;display:flex;padding:10px;" id="divMenu">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index" title="Home">
+                        <img src="~/images/home.png" class="menuImg" title="Home" id="navLinkHome" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Roles" asp-action="Index" title="Project Roles">
+                        <img src="~/images/role.png" class="menuImg" title="Project Roles" id="navLinkRoles" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Projects" asp-action="Index" title="Projects">
+                        <img src="~/images/projects.jpg" class="menuImg" title="Projects" id="navLinkProjects" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Employees" asp-action="Index" title="Employees">
+                        <img src="~/images/users.jpg" class="menuImg" title="Employees" id="navLinkEmployees" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="EmployeesByManager" asp-action="Index" title="Employees By Manager">
+                        <img src="~/images/EmployeesByManager.png" class="menuImg" id="navLinkEmpByManager" title="Employees By Manager" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="ProjectTeams" asp-action="Index" title="Project Teams">
+                        <img src="~/images/team.png" class="menuImg" title="Project Teams" id="navLinkProjTeams" />
+
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="WorkPeriods" asp-action="Index" title="Work Periods">
+                        <img src="~/images/schedule.png" class="menuImg" title="Work Periods" id="navLinkWorkPeriods" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="ProjectHourAllocation" asp-action="Index" title="Project Hour Allocation -- period">
+                        <img src="~/images/projectHour.png" class="menuImg" title="Project Hour Allocation -- period" id="navLinkProjectHourAllocations" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="EmployeeHourAllocation" asp-action="Index" title="Employee Hour Allocations -- period">
+                        <img src="~/images/employeeAlloc.png" class="menuImg" title="Employee Hour Allocations -- period" id="navLinkEmployeeHourAllocation" />
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Reports" asp-action="Index" title="Reports">
+                        <img src="~/images/reports.png" class="menuImg" title="Reports" id="navLinkReports" />
+
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }
+
+
+
+    <div class="container body-content" style="float:right;margin-right:26%;width:52%;">
+        @RenderBody()
+
+        <footer class="footer cFooter">
+            <hr class="custHR" />
+
+            <p>Copyright  &copy;@DateTime.Now.Year - Dayton T. Brown Inc. All Rights Reserved.</p>
+
+        </footer>
+
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

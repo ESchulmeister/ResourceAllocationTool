@@ -1,0 +1,142 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkProjects').css({ 'background-color': HighlightColor });
+        $('#divGrid').show();
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+   
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+
+    <div class="form container" id="divGrid">
+
+
+        <div class="dx-filedset">
+            <div class="dx-field custGrid" id="divGrid">
+         @*        @(Html.DevExtreme().DataGrid<ProjectModel>()
+            .ID("gridProjects")
+            .SearchPanel(searchPanel => searchPanel
+                .Visible(true)
+                .Width(285)
+                .Placeholder("Search for project/manager, min 3 chars")
+            )
+
+            .OnEditorPreparing("onSearch")
+
+            .DataSource(d => d.Mvc()
+                .Controller("ApiProjects")
+                .LoadAction("List")
+                .LoadParams(new { all = true })
+                .UpdateAction("UpdateProject")
+                .Key("ID")
+            )
+            .RemoteOperations(true)
+
+            .Columns(col =>
+            {
+
+                col.AddFor(m => m.Name)
+                    .Width(120)
+                    .ShowInColumnChooser(false)
+                    .FormItem(e => e.Visible(false));
+
+
+                col.AddFor(m => m.Description)
+                    .CssClass("descWrap")
+                    .Width(200)
+                    .ShowInColumnChooser(false)
+                    .FormItem(e => e.Visible(false));
+
+                col.AddFor(m => m.ManagerID)
+                        .Caption("Project Manager")
+                        .CssClass("colCenter")
+                        .ValidationRules(f => f.AddRequired())
+                        .Lookup(lookup => lookup
+                            .DataSource
+                            (
+                                d => d.Mvc()
+                                    .Controller("ApiUsers")
+                                    .LoadAction("ListAll")
+                                    .LoadParams(new { all = true })
+                                    .Key("ID")
+                            )
+
+                        .ValueExpr("ID")
+                        .DisplayExpr("FullNameReversed")
+                        .AllowClearing(true)
+                        );
+
+                col.AddFor(m => m.WillTrackHours)
+                      .Caption("Track Hours?")
+                      .Width(90)
+                      .DataType(GridColumnDataType.Boolean)
+                      .TrueText("Yes").FalseText("No")
+                      .CssClass("colCenter");
+
+                col.Add()
+                   .Type(GridCommandColumnType.Buttons)
+                   .CssClass("cmd colCenter")
+                   .Buttons(b =>
+                   {
+                       b.Add()
+                        .Name(GridColumnButtonName.Edit)
+                        .Hint("Assign/change the Project Manager & set tracking");
+                   });
+
+
+
+
+            })
+
+            .AllowColumnReordering(false)
+            .AllowColumnResizing(true)
+            .ShowBorders(true)
+            .Height(500)
+            .NoDataText("No Projects Detected")
+            .ColumnAutoWidth(false)
+            .FilterRow(f => f.Visible(true))
+            .HeaderFilter(f => f.Visible(true))
+            .Editing(edt =>edt.Mode(GridEditMode.Form)
+                .Form(f => f.ColCount(1))
+                .UseIcons(true)
+                .AllowUpdating(bCanEdit)
+            )
+            .Paging(paging => paging.PageSize(15))
+            .Pager(pager =>
+            {
+                pager.Visible(true);
+                pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                pager.ShowInfo(true);
+            }))
+ *@
+            </div>
+
+        </div>
+
+    </div>
+}

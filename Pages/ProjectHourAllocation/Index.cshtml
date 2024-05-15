@@ -1,0 +1,180 @@
+﻿@page
+@model IndexModel
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor;
+
+@using ResourceAllocationTool.Models
+
+
+@{
+    ViewData["Title"] = "Project Hour Allocation";
+    Layout = "_Layout";
+
+    var currUser = HttpContextAccessor.HttpContext.User;
+
+    string sIsAdminClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsAdministrator").Value;
+
+    string sIsSupervisorClaim = currUser.Claims.FirstOrDefault(c => c.Type == "IsSupervisor").Value;
+
+    bool bCanEdit = (String.Compare(sIsAdminClaim, "true", true) == 0) ||
+                    (String.Compare(sIsSupervisorClaim, "true", true) == 0);
+
+}
+
+<script language="javascript">
+    $(document).ready(function () {
+        $('#navLinkProjectHourAllocations').css({ 'background-color': HighlightColor });
+    });
+</script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <h2 class="title action-link">@ViewData["Title"]</h2>
+
+    <div class="form container">
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="custLabel">Period:</div>
+                <div class="dx-field-value" style="width:75%">
+       @*              @(Html.DevExtreme().SelectBox()
+                    .DeferRendering(false)
+                    .ID("selPeriods")
+                    .OnValueChanged("refreshProjectAllocationsGrid")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiPeriods")
+                        .LoadAction("List")
+                        .Key("ID")
+                    )
+                    .ShowClearButton(true)
+                    .DisplayExpr("Name")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true) *@
+                )
+                </div>
+            </div>
+        </div>
+        <div class="dx-fieldset">
+            <div class="dx-field">
+                <div class="custLabel">Project:</div>
+                <div class="dx-field-value" style="width:75%">
+                 @*    @(Html.DevExtreme().SelectBox()
+                   .DeferRendering(false)
+                    .ID("selProjects")
+                    .OnValueChanged("refreshProjectAllocationsGrid")
+                    .DataSource(ds => ds.Mvc()
+                        .Controller("ApiProjects")
+                        .LoadAction("List")
+                        .Key("ID")
+                    )
+                    .ShowClearButton(true)
+                    .DisplayExpr("Name")
+                    .ValueExpr("ID")
+                    .SearchEnabled(true) *@
+                    )
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dx-fieldset" id="divGrid">
+
+            <div class="dx-field">
+
+                <div class="dx-field">
+                    <div class="custLabel">Team Hours</div>
+                </div>
+
+                <div class="dx-field custGrid">
+                  @*   @(Html.DevExtreme().DataGrid<ProjectAllocationModel>()
+                    .ID("gridProjectHourAllocation")
+
+                    .DataSource(d => d.Mvc()
+                        .Controller("ApiProjectAllocations")
+                        .LoadAction("List")
+                        .UpdateAction("SaveHourAssociation")
+                        .LoadParams(new { projectID = new JS("getProjectID"), periodID = new JS("getPeriodID") })
+                        .Key("Key") *@
+                    )
+                    .OnEditorPreparing("grdProjectAllocation_OnEditorPreparing")
+                    .RemoteOperations(true)
+                    .Columns(col =>
+                    {
+
+                        col.AddFor(m => m.UserFullNameReversed)
+                            .Width(200)
+                            .Caption("Employee Name");
+
+                        col.AddFor(m => m.ProjectRole)
+                            .Width(150)
+                            .Caption("Project Role");
+
+                        col.AddFor(m => m.FTE)
+                            .CssClass("colRight");
+
+                        col.AddFor(m => m.TotalHours)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(0))
+                            .CssClass("colCenter");
+
+                        col.AddFor(m => m.UsedHours)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(0))
+                            .CssClass("colCenter");
+
+                        col.AddFor(m => m.RemainingHours)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(0))
+                            .CssClass("colCenter");
+
+                        col.AddFor(m => m.EstimatedHours)
+                            .CssClass("colCenter")
+                            .DataType(GridColumnDataType.Number)
+                            .Format(f => f.Type(Format.FixedPoint).Precision(0));
+                    
+                        col.Add()
+                            .Width(75)
+                            .Type(GridCommandColumnType.Buttons)
+                            .CssClass("colCenter")
+                            .Buttons(b =>
+                            {
+                                b.Add()
+                                    .Hint("Change the Estimated/Actual Hours")
+                                    .Name(GridColumnButtonName.Edit);
+                            });
+                    })
+
+                    .AllowColumnReordering(false)
+                    .AllowColumnResizing(false)
+                    .ShowBorders(true)
+                    .NoDataText("No Team Hours Detected")
+                    .ColumnAutoWidth(false)
+
+                    .HeaderFilter(f => f.Visible(true))
+
+                    .FilterRow(f => f.Visible(true))
+
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Editing(edt => edt.Mode(GridEditMode.Row)
+                        .UseIcons(true)
+                        .AllowUpdating(bCanEdit)
+                    )
+
+                    .Paging(paging => paging.PageSize(10))
+
+                    .OnRowUpdated("updateProjectAllocations")
+                    .Pager(pager =>
+                    {
+                        pager.Visible(true);
+                        pager.DisplayMode(GridPagerDisplayMode.Adaptive);
+                        pager.ShowInfo(true);
+                    }))
+
+
+
+                </div>
+
+            </div>
+
+        </div>
+     </div>
+
+}
